@@ -2,6 +2,8 @@ package com.mercadoLibre.endpointAgent.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Log {
     @Id
@@ -10,6 +12,8 @@ public class Log {
     private String action;
 
     private String details;
+
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -22,18 +26,11 @@ public class Log {
     public Log() {
     }
 
-
-    public Log(String action, String details, Client client) {
+    public Log(String action, String details, LocalDateTime date, Client client, File file) {
         this.action = action;
         this.details = details;
+        this.date = date;
         this.client = client;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
         this.file = file;
     }
 
@@ -58,11 +55,27 @@ public class Log {
         this.details = details;
     }
 
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
     public Client getClient() {
         return client;
     }
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }
