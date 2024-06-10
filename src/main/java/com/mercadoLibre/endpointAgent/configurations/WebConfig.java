@@ -35,8 +35,8 @@ public class WebConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/api/auth/login","/h2-console/**").permitAll()
-
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+                              //  .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
