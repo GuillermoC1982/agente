@@ -2,6 +2,7 @@ package com.mercadoLibre.endpointAgent.servicesSecutiry;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
 @Service
 public class JwtUtilService {
 
@@ -49,6 +51,8 @@ public class JwtUtilService {
                 .signWith(SECRET_KEY)
                 .compact();
     }
+
+
     public String generateToken(UserDetails userDetails){
         Map<String,Object> claims = new HashMap<>();
         String rol = userDetails.getAuthorities().iterator().next().getAuthority();
