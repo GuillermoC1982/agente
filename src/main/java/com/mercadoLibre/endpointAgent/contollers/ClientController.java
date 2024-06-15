@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.mercadoLibre.endpointAgent.repositories.ClientRepository;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/client")
 public class ClientController {
@@ -23,8 +26,9 @@ public class ClientController {
     @Operation(summary = "Endpoint para obtener todos los usuarios", description = "Retorna una lista con todos los usuarios registrados en el sistema")
     @SecurityRequirement(name = "bearer Authentication")
     @GetMapping("/getClients")
-    public Iterable<Client> getClients(){
-        return clientRepository.findAll();
+    public ResponseEntity<?>getClients(){
+        Set<ClientDto> clients = clientRepository.findAll().stream().map(client -> new ClientDto(client)).collect(Collectors.toSet());
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @Operation(summary = "Endpoint para registrar un nuevo usuario", description = " Guarda un nuevo usuario en la base de datos sqLite. Retorna este nuevo usuario registrado en el sistema junto con el http status de la operación")

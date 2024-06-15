@@ -1,7 +1,6 @@
 package com.mercadoLibre.endpointAgent.dtos;
 
 import com.mercadoLibre.endpointAgent.models.File;
-import com.mercadoLibre.endpointAgent.models.ScanResult;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -12,9 +11,9 @@ public class FileDto {
     private String path;
     private String permissions;
     private String sha256;
-    private LocalDateTime createAt;
-    private LocalDateTime modifiedAt;
-    private LocalDateTime accessedAt;
+    private LocalDateTime creationTime;
+    private LocalDateTime lastModifiedTime;
+    private LocalDateTime lastAccessTime;
 
     private Set<ScanResultDto> scanResults;
 
@@ -22,9 +21,9 @@ public class FileDto {
         this.path = file.getPath();
         this.permissions = file.getPermissions();
         this.sha256 = file.getSha256();
-        this.createAt = file.getCreateAt();
-        this.modifiedAt = file.getModifiedAt();
-        this.accessedAt = file.getAccessedAt();
+        this.creationTime = file.getCreationTime();
+        this.lastModifiedTime = file.getLastModifiedTime();
+        this.lastAccessTime = file.getLastAccessTime();
         this.scanResults = file.getScanResults().stream().map(scanResult -> new ScanResultDto(scanResult)).collect(Collectors.toSet());
     }
 
@@ -40,15 +39,15 @@ public class FileDto {
         return sha256;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public LocalDateTime getCreationTime() {
+        return creationTime;
     }
 
-    public LocalDateTime getModifiedAt() {
-        return modifiedAt;
+    public LocalDateTime getLastModifiedTime() {
+        return lastModifiedTime;
     }
 
-    public LocalDateTime getAccessedAt() {
-        return accessedAt;
+    public LocalDateTime getLastAccessTime() {
+        return lastAccessTime;
     }
 }

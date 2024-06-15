@@ -17,11 +17,11 @@ public class File {
 
     private String sha256;
 
-    private LocalDateTime createAt;
+    private LocalDateTime creationTime;
 
-    private LocalDateTime modifiedAt;
+    private LocalDateTime lastModifiedTime;
 
-    private LocalDateTime accessedAt;
+    private LocalDateTime lastAccessTime;
 
     @OneToMany(mappedBy = "file")
     private Set<ScanResult> scanResults = new HashSet<>();
@@ -32,13 +32,13 @@ public class File {
     public File() {
     }
 
-    public File(String path, String permissions, String sha256, LocalDateTime createAt, LocalDateTime modifiedAt, LocalDateTime accessedAt) {
+    public File(String path, String permissions, String sha256, LocalDateTime creationTime, LocalDateTime lastModifiedTime, LocalDateTime accessedAt) {
         this.path = path;
         this.permissions = permissions;
         this.sha256 = sha256;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
-        this.accessedAt = accessedAt;
+        this.creationTime = creationTime;
+        this.lastModifiedTime = lastModifiedTime;
+        this.lastAccessTime = accessedAt;
     }
 
     public Set<ScanResult> getScanResults() {
@@ -86,27 +86,27 @@ public class File {
         this.sha256 = sha256;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public LocalDateTime getCreationTime() {
+        return creationTime;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 
-    public LocalDateTime getModifiedAt() {
-        return modifiedAt;
+    public LocalDateTime getLastModifiedTime() {
+        return lastModifiedTime;
     }
 
-    public void setModifiedAt(LocalDateTime modifiedAt) {
-        this.modifiedAt = modifiedAt;
+    public void setLastModifiedTime(LocalDateTime lastModifiedTime) {
+        this.lastModifiedTime = lastModifiedTime;
     }
 
-    public LocalDateTime getAccessedAt() {
-        return accessedAt;
+    public LocalDateTime getLastAccessTime() {
+        return lastAccessTime;
     }
 
-    public void setAccessedAt(LocalDateTime accessedAt) {
-        this.accessedAt = accessedAt;
+    public void setLastAccessTime(LocalDateTime lastAccessTime) {
+        this.lastAccessTime = lastAccessTime;
     }
 }
