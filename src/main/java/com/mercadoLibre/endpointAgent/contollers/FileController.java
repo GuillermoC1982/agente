@@ -85,6 +85,9 @@ public class FileController {
         }
     }
 
+    @Operation(summary = "Endpoint para escanear un archivo en el sistema",
+            description = "Retorna la respuesta de VirusTotal")
+
     @GetMapping("/scanFile")
     public String scanFile(@RequestBody ReciveFileDto body){
 
