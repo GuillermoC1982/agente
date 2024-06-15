@@ -85,10 +85,21 @@ public class FileController {
         }
     }
 
-//    @GetMapping("/scanFile")
-//    public String scanFile(){
-//
-//
-//
-//    }
+    @GetMapping("/scanFile")
+    public String scanFile(@RequestBody ReciveFileDto body){
+
+
+            String apiKey = "bfed34dc176355aa97d52ee5434bc93bf96d1985c5daa52afc47cf7a8c314ab7";
+
+            String hashSha256 = fileService.calculateSha256(body.path());
+            String result = fileService.sendHashToVirustotal(hashSha256, apiKey);
+
+            System.out.println("El hash SHA-256 del archivo es: " + hashSha256);
+            System.out.println("Respuesta de VirusTotal: " + result);
+
+
+            return result;
+
+
+    }
 }
