@@ -9,6 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @SpringBootApplication
 public class EndpointAgentApplication {
 @Autowired
@@ -25,6 +30,8 @@ private PasswordEncoder passwordEncoder;
 			Client user = new Client("user@meli.com", passwordEncoder.encode("123"));
 
 			clientRepository.save(user);
+
+
 		};
 	}
 }

@@ -9,21 +9,24 @@ import java.util.stream.Collectors;
 public class FileDto {
 
     private String path;
-    private String permissions;
+    private String fileType;
     private String sha256;
     private LocalDateTime creationTime;
     private LocalDateTime lastModifiedTime;
     private LocalDateTime lastAccessTime;
 
+    private Long sizeInBytes;
+
     private Set<ScanResultDto> scanResults;
 
     public FileDto(File file) {
         this.path = file.getPath();
-        this.permissions = file.getPermissions();
+        this.fileType = file.getFileType();
         this.sha256 = file.getSha256();
         this.creationTime = file.getCreationTime();
         this.lastModifiedTime = file.getLastModifiedTime();
         this.lastAccessTime = file.getLastAccessTime();
+        this.sizeInBytes = file.getSizeInBytes();
         this.scanResults = file.getScanResults().stream().map(scanResult -> new ScanResultDto(scanResult)).collect(Collectors.toSet());
     }
 
@@ -31,8 +34,8 @@ public class FileDto {
         return path;
     }
 
-    public String getPermissions() {
-        return permissions;
+    public String getFileType() {
+        return fileType;
     }
 
     public String getSha256() {
@@ -49,5 +52,13 @@ public class FileDto {
 
     public LocalDateTime getLastAccessTime() {
         return lastAccessTime;
+    }
+
+    public Long getSizeInBytes() {
+        return sizeInBytes;
+    }
+
+    public Set<ScanResultDto> getScanResults() {
+        return scanResults;
     }
 }

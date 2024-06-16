@@ -3,6 +3,8 @@ package com.mercadoLibre.endpointAgent.contollers;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.JwtResponse;
 import com.mercadoLibre.endpointAgent.repositories.ClientRepository;
+import com.mercadoLibre.endpointAgent.services.ClientService;
+import com.mercadoLibre.endpointAgent.services.LogService;
 import com.mercadoLibre.endpointAgent.servicesSecutiry.JwtUtilService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,8 +24,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+   @Autowired
+   private ClientService clientService;
+
     @Autowired
-    ClientRepository clientRepository;
+    private LogService logService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -51,6 +56,7 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password));
             final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             final String jwt = jwtUtilService.generateToken(userDetails);
+
             return ResponseEntity.ok(jwt);
         }catch (Exception e){
             return new ResponseEntity<>("Email or password invalid" , HttpStatus.BAD_REQUEST);

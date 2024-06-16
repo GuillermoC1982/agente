@@ -26,12 +26,10 @@ public class Log {
     public Log() {
     }
 
-    public Log(String action, String details, LocalDateTime date, Client client, File file) {
+    public Log(String action, String details, LocalDateTime date) {
         this.action = action;
         this.details = details;
         this.date = date;
-        this.client = client;
-        this.file = file;
     }
 
     public long getId() {
@@ -78,4 +76,6 @@ public class Log {
     public void setFile(File file) {
         this.file = file;
     }
+
+
 }

@@ -58,4 +58,11 @@ public class Client {
     public void setLogs(Set<Log> logs) {
         this.logs = logs;
     }
+
+    public void addLog(Log log) {
+        this.logs.add(log);
+        log.setClient(this);
+    }
+
+
 }

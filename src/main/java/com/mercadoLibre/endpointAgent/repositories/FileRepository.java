@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
+
+    File findFileBySha256(String sha256);
 }

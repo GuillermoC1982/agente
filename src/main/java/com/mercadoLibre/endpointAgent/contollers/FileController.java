@@ -1,6 +1,8 @@
 package com.mercadoLibre.endpointAgent.contollers;
 
 import com.mercadoLibre.endpointAgent.dtos.ReciveFileDto;
+import com.mercadoLibre.endpointAgent.models.File;
+import com.mercadoLibre.endpointAgent.models.Log;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/file")
@@ -47,23 +50,22 @@ public class FileController {
                 // Obtener los atributos del archivo
                 BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
 
-                // Obtener la fecha de creación, modificación, acceso, tamaño y tipo de archivo
-                String creationTime = attr.creationTime().toString();
-                String lastModifiedTime = attr.lastModifiedTime().toString();
-                String lastAccessTime = attr.lastAccessTime().toString();
-                long size = attr.size();
-                String fileType = Files.probeContentType(path);
+                //Obtengo los atributos del archivo y los guardo en el objeto File para retornarlos en la respuesta de la petición y para registrarlos en la base de datos sqLite y en el log de la app
+                File file = fileService.generateFileByBasicFileAttributes(attr, path);
+                Log log = new Log("DELETE","File deleted successfully at " + body.path(), LocalDateTime.now());
+                file.addLog(log);
+                fileService.saveFile(file);
 
                 // Borrar el archivo
                 Files.delete(path);
 
 
                 return "El archivo " + body.path() + " ha sido borrado exitosamente.\n" +
-                        "Fecha de creación: " + creationTime + "\n" +
-                        "Última modificación: " + lastModifiedTime + "\n" +
-                        "Último acceso: " + lastAccessTime + "\n" +
-                        "Tamaño: " + size + " bytes\n" +
-                        "Tipo de archivo: " + fileType;
+                        "Fecha de creación: " + file.getCreationTime() + "\n" +
+                        "Última modificación: " + file.getLastModifiedTime() + "\n" +
+                        "Último acceso: " + file.getLastAccessTime() + "\n" +
+                        "Tamaño: " + file.getSizeInBytes() + " bytes\n" +
+                        "Tipo de archivo: " + file.getFileType() + "\n" ;
 
 
             } else {
@@ -88,21 +90,16 @@ public class FileController {
     @Operation(summary = "Endpoint para escanear un archivo en el sistema",
             description = "Retorna la respuesta de VirusTotal")
 
-    @GetMapping("/scanFile")
-    public String scanFile(@RequestBody ReciveFileDto body){
-
-
+    @GetMapping("/scan")
+    public String scanFile(@RequestParam() String path) {
             String apiKey = "bfed34dc176355aa97d52ee5434bc93bf96d1985c5daa52afc47cf7a8c314ab7";
 
-            String hashSha256 = fileService.calculateSha256(body.path());
+            String hashSha256 = fileService.calculateSha256(path);
             String result = fileService.sendHashToVirustotal(hashSha256, apiKey);
 
             System.out.println("El hash SHA-256 del archivo es: " + hashSha256);
             System.out.println("Respuesta de VirusTotal: " + result);
 
-
             return result;
-
-
     }
 }
