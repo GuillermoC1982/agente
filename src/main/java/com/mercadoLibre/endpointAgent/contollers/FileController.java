@@ -3,6 +3,7 @@ package com.mercadoLibre.endpointAgent.contollers;
 import com.mercadoLibre.endpointAgent.dtos.ReciveFileDto;
 import com.mercadoLibre.endpointAgent.models.File;
 import com.mercadoLibre.endpointAgent.models.Log;
+import com.mercadoLibre.endpointAgent.services.LogService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,10 @@ import java.time.LocalDateTime;
 public class FileController {
 
     @Autowired
-    FileService fileService;
+    private FileService fileService;
+
+    @Autowired
+    private LogService logService;
 
 
 
@@ -52,11 +56,9 @@ public class FileController {
 
                 //Obtengo los atributos del archivo y los guardo en el objeto File para retornarlos en la respuesta de la petición y para registrarlos en la base de datos sqLite y en el log de la app
                 File file = fileService.generateFileByBasicFileAttributes(attr, path);
-                Log log = new Log("DELETE","File deleted successfully at " + body.path(), LocalDateTime.now());
-                file.addLog(log);
-                fileService.saveFile(file);
+                logService.deletedFile(file);
 
-                // Borrar el archivo
+                // Borrar el archivo en el sistema
                 Files.delete(path);
 
 

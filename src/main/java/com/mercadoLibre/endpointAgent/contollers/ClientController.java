@@ -1,5 +1,5 @@
 package com.mercadoLibre.endpointAgent.contollers;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.mercadoLibre.endpointAgent.dtos.ClientDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.services.ClientService;
@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.mercadoLibre.endpointAgent.repositories.ClientRepository;
@@ -31,7 +32,17 @@ public class ClientController {
     @SecurityRequirement(name = "bearer Authentication")
     @GetMapping("/getAll")
     public ResponseEntity<?>getClients(){
-        List<Client> clients = clientService.findAllClients();
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Client client = clientService.findClientByEmail(email);
+
+        if (client == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        logService.getAllClients(client);
+
+        Set<ClientDto> clients = clientService.findAllClientsDto(clientService.findAllClients());
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
@@ -50,9 +61,9 @@ public class ClientController {
         Client client = new Client(email, passwordEncoder.encode(password));
 
         clientService.saveClient(client);
+        logService.createdClient(client);
 
-
-        return new ResponseEntity<>(client, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ClientDto(client), HttpStatus.CREATED);
     }
 
 }

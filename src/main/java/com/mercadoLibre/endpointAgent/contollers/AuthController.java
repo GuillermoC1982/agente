@@ -57,7 +57,11 @@ public class AuthController {
             final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             final String jwt = jwtUtilService.generateToken(userDetails);
 
-            return ResponseEntity.ok(jwt);
+            logService.loggedClient(clientService.findClientByEmail(email));
+
+
+            return new ResponseEntity<>( "Token: " + jwt, HttpStatus.OK );
+
         }catch (Exception e){
             return new ResponseEntity<>("Email or password invalid" , HttpStatus.BAD_REQUEST);
         }

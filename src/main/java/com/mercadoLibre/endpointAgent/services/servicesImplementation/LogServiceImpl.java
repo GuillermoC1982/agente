@@ -33,7 +33,7 @@ public class LogServiceImpl implements LogService {
     public void createdClient(Client client) {
         Log log = new Log();
         log.setAction("Created");
-        log.setDetails(client.getEmail() + " was created successfully");
+        log.setDetails("Client with email '" + client.getEmail() + "' was created successfully");
         log.setDate(LocalDateTime.now());
         logRepository.save(log);
 
@@ -47,7 +47,7 @@ public class LogServiceImpl implements LogService {
     public void loggedClient(Client client) {
         Log log = new Log();
         log.setAction("Logged");
-        log.setDetails(client.getEmail() + " was logged successfully");
+        log.setDetails(client.getEmail() + " was logged successfully in the system right now");
         log.setDate(LocalDateTime.now());
         logRepository.save(log);
 
@@ -67,5 +67,18 @@ public class LogServiceImpl implements LogService {
         file.addLog(log);
 
         fileService.saveFile(file);
+    }
+
+    @Override
+    public void getAllClients(Client client) {
+        Log log = new Log();
+        log.setAction("GetAllClients");
+        log.setDetails("GetAllClients was executed successfully all clients were retrieved");
+        log.setDate(LocalDateTime.now());
+        logRepository.save(log);
+
+        client.addLog(log);
+
+        clientService.saveClient(client);
     }
 }

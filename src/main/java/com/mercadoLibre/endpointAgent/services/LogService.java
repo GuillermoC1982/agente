@@ -13,4 +13,6 @@ public interface LogService {
 
     void deletedFile(File file);
 
+    void getAllClients(Client client);
+
 }

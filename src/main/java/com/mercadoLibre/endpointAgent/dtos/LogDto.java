@@ -17,7 +17,12 @@ public class LogDto {
         this.action = log.getAction();
         this.details = log.getDetails();
         this.date = log.getDate();
-        this.file = new FileDto(log.getFile());
+        if (log.getFile() != null) {
+            this.file = new FileDto(log.getFile());
+        }else {
+            this.file = null;
+        }
+
     }
 
     public String getAction() {
