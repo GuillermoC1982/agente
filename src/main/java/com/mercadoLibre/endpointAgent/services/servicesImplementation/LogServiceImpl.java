@@ -1,4 +1,5 @@
 package com.mercadoLibre.endpointAgent.services.servicesImplementation;
+import com.mercadoLibre.endpointAgent.dtos.LogDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.File;
 import com.mercadoLibre.endpointAgent.models.Log;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LogServiceImpl implements LogService {
@@ -57,16 +60,16 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public void deletedFile(File file) {
+    public void deletedFile(File file, Client client) {
         Log log = new Log();
         log.setAction("Deleted");
         log.setDetails(file.getPath() + " was deleted successfully");
         log.setDate(LocalDateTime.now());
-        logRepository.save(log);
-
-        file.addLog(log);
-
-        fileService.saveFile(file);
+            logRepository.save(log);
+            file.addLog(log);
+            fileService.saveFile(file);
+            client.addLog(log);
+            clientService.saveClient(client);
     }
 
     @Override
@@ -75,10 +78,23 @@ public class LogServiceImpl implements LogService {
         log.setAction("GetAllClients");
         log.setDetails("GetAllClients was executed successfully all clients were retrieved");
         log.setDate(LocalDateTime.now());
-        logRepository.save(log);
+            logRepository.save(log);
+            client.addLog(log);
+            clientService.saveClient(client);
+    }
 
-        client.addLog(log);
+    @Override
+    public Set<LogDto> getAllLogs() {
+        return logRepository.findAll().stream().map(LogDto::new).collect(Collectors.toSet());
+    }
 
-        clientService.saveClient(client);
+    @Override
+    public void scanFile(File file) {
+
+        Log log = new Log();
+        log.setAction("Scan");
+        log.setDetails(file.getPath() + " was scanned successfully");
+        log.setDate(LocalDateTime.now());
+            logRepository.save(log);
     }
 }

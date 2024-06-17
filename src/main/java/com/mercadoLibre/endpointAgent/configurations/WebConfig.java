@@ -34,7 +34,8 @@ public class WebConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/auth/login","/h2-console/**").permitAll()
+                                .requestMatchers("/api/auth/login","/api/auth/register").permitAll()
+                                .requestMatchers("/swagger-ui/index.html#/**").permitAll()
                                 .anyRequest().permitAll()
                               //  .anyRequest().authenticated()
                 )

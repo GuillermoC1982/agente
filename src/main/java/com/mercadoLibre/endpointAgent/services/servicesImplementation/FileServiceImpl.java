@@ -67,14 +67,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public LocalDateTime stringToLocalDateTime(String date) {
-
         // Convierte primero la cadena en una ZonedDateTime porque incluye la información de la zona horaria (UTC)
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(date, DateTimeFormatter.ISO_ZONED_DATE_TIME);
 
-        // Convertir a LocalDateTime
+        // Convertir a LocalDateTime en la zona horaria del sistema
         LocalDateTime localDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
 
-        return LocalDateTime.parse(date);
+        return localDateTime;
     }
 
     // Calcular el hash SHA256 de un archivo
