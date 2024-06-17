@@ -46,9 +46,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación exitosa", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class))
-            }),
-            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+            })
     })
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestParam String email, @RequestParam String password) {

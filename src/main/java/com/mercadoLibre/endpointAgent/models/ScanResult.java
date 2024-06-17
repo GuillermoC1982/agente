@@ -8,8 +8,9 @@ public class ScanResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+
     private String details;
-    private boolean isMalicious;
     private LocalDateTime scanDate;
 
     @ManyToOne
@@ -18,16 +19,16 @@ public class ScanResult {
     public ScanResult() {
     }
 
-    public ScanResult(String details, boolean isMalicious, LocalDateTime scanDate, File file) {
+    public ScanResult(String details,  LocalDateTime scanDate) {
         this.details = details;
-        this.isMalicious = isMalicious;
         this.scanDate = scanDate;
-        this.file = file;
+
     }
 
     public long getId() {
         return id;
     }
+
 
     public String getDetails() {
         return details;
@@ -35,14 +36,6 @@ public class ScanResult {
 
     public void setDetails(String details) {
         this.details = details;
-    }
-
-    public boolean isMalicious() {
-        return isMalicious;
-    }
-
-    public void setMalicious(boolean malicious) {
-        isMalicious = malicious;
     }
 
     public LocalDateTime getScanDate() {

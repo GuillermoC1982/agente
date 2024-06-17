@@ -18,9 +18,9 @@ public interface LogService {
 
     void getAllClients(Client client);
 
-    Set<LogDto> getAllLogs();
+    Set<LogDto> getAllLogs(Client client);
 
-    void scanFile(File file);
+    void scanFile(File file, Client client);
 
 
 

@@ -33,37 +33,45 @@ public class ClientController {
     @GetMapping("/getAll")
     public ResponseEntity<?>getClients(){
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Client client = clientService.findClientByEmail(email);
+        try{
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Client client = clientService.findClientByEmail(email);
 
-        if (client == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            if (client == null) {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            logService.getAllClients(client);
+
+            Set<ClientDto> clients = clientService.findAllClientsDto(clientService.findAllClients());
+            return new ResponseEntity<>(clients, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("User not found or not authorized", HttpStatus.NOT_FOUND);
         }
 
-        logService.getAllClients(client);
-
-        Set<ClientDto> clients = clientService.findAllClientsDto(clientService.findAllClients());
-        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @Operation(summary = "Endpoint para registrar un nuevo usuario", description = " Guarda un nuevo usuario en la base de datos sqLite. Retorna este nuevo usuario registrado en el sistema junto con el http status de la operación correspondiente generando el primer log del usuario")
     @PostMapping("/create")
     public ResponseEntity<?> createClient(@RequestParam String email, @RequestParam String password){
 
-        if(email == null || password == null){
-            return new ResponseEntity<>("Email and password are required", HttpStatus.BAD_REQUEST);
+        try{
+            if(email == null || password == null){
+                return new ResponseEntity<>("Email and password are required", HttpStatus.BAD_REQUEST);
+            }
+
+            if(clientService.findClientByEmail(email) != null){
+                return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            }
+
+            Client client = new Client(email, passwordEncoder.encode(password));
+
+            clientService.saveClient(client);
+            logService.createdClient(client);
+
+            return new ResponseEntity<>(new ClientDto(client), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>("User not found or not authorized", HttpStatus.NOT_FOUND);
         }
-
-        if(clientService.findClientByEmail(email) != null){
-            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
-        }
-
-        Client client = new Client(email, passwordEncoder.encode(password));
-
-        clientService.saveClient(client);
-        logService.createdClient(client);
-
-        return new ResponseEntity<>(new ClientDto(client), HttpStatus.CREATED);
     }
-
 }

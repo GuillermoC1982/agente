@@ -3,10 +3,12 @@ import com.mercadoLibre.endpointAgent.dtos.LogDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.File;
 import com.mercadoLibre.endpointAgent.models.Log;
+import com.mercadoLibre.endpointAgent.models.ScanResult;
 import com.mercadoLibre.endpointAgent.repositories.LogRepository;
 import com.mercadoLibre.endpointAgent.services.ClientService;
 import com.mercadoLibre.endpointAgent.services.FileService;
 import com.mercadoLibre.endpointAgent.services.LogService;
+import com.mercadoLibre.endpointAgent.services.ScanResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class LogServiceImpl implements LogService {
     @Autowired
     LogRepository logRepository;
 
+    @Autowired
+    private ScanResultService scanResultService;
     @Autowired
     private FileService fileService;
 
@@ -84,17 +88,30 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public Set<LogDto> getAllLogs() {
+    public Set<LogDto> getAllLogs(Client client) {
+        Log log = new Log();
+        log.setAction("GetAllLogs");
+        log.setDetails("GetAllLogs was executed successfully all logs were retrieved");
+        log.setDate(LocalDateTime.now());
+        logRepository.save(log);
+
         return logRepository.findAll().stream().map(LogDto::new).collect(Collectors.toSet());
     }
 
+
     @Override
-    public void scanFile(File file) {
+    public void scanFile(File file, Client client) {
 
         Log log = new Log();
         log.setAction("Scan");
         log.setDetails(file.getPath() + " was scanned successfully");
         log.setDate(LocalDateTime.now());
             logRepository.save(log);
+            file.addLog(log);
+            fileService.saveFile(file);
+            client.addLog(log);
+            clientService.saveClient(client);
+
+
     }
 }

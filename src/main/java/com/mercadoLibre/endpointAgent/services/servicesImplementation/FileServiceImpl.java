@@ -3,6 +3,7 @@ package com.mercadoLibre.endpointAgent.services.servicesImplementation;
 import com.mercadoLibre.endpointAgent.models.File;
 import com.mercadoLibre.endpointAgent.repositories.FileRepository;
 import com.mercadoLibre.endpointAgent.services.FileService;
+import com.mercadoLibre.endpointAgent.services.ScanResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -26,6 +27,10 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileRepository fileRepository;
+
+    @Autowired
+    private ScanResultService scanResultService;
+
 
     @Override
     public void saveFile(File file) {
