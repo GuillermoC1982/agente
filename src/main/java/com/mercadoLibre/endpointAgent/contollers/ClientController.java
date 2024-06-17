@@ -71,7 +71,7 @@ public class ClientController {
 
             return new ResponseEntity<>(new ClientDto(client), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>("User not found or not authorized", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not found or not authorized in the system", HttpStatus.NOT_FOUND);
         }
     }
 }
