@@ -4,6 +4,7 @@ import com.mercadoLibre.endpointAgent.dtos.LogDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.File;
 import com.mercadoLibre.endpointAgent.models.Log;
+import com.mercadoLibre.endpointAgent.models.ScanResult;
 
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public interface LogService {
 
     Set<LogDto> getAllLogs(Client client);
 
-    void scanFile(File file, Client client);
+    void scanFile(File file, Client client, ScanResult scanResult);
 
 
 

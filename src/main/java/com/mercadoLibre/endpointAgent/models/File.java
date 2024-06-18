@@ -20,8 +20,11 @@ public class File {
     private String path;
     private String fileType;
     private String sha256;
+
     private LocalDateTime creationTime;
+
     private LocalDateTime lastModifiedTime;
+
     private LocalDateTime lastAccessTime;
 
     private Long sizeInBytes;
@@ -33,6 +36,10 @@ public class File {
     private Set<Log> logs = new HashSet<>();
 
     public File() {
+    }
+
+    public File(String fileType) {
+        this.fileType = fileType;
     }
 
     public File(String path, String fileType, String sha256, LocalDateTime creationTime, LocalDateTime lastModifiedTime, LocalDateTime lastAccessTime, Long sizeInBytes) {

@@ -27,9 +27,9 @@ private PasswordEncoder passwordEncoder;
 	public CommandLineRunner commandLineRunner(ClientRepository clientRepository) {
 		return args -> {
 
-			Client user = new Client("user@meli.com", passwordEncoder.encode("123"));
-
-			clientRepository.save(user);
+//			Client user = new Client("user@meli.com", passwordEncoder.encode("123"));
+//
+//			clientRepository.save(user);
 
 
 		};

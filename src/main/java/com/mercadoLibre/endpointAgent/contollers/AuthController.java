@@ -46,7 +46,8 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación exitosa", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponse.class))
-            })
+            }),
+            @ApiResponse(responseCode = "403", description = "Credenciales inválidas", content = @Content)
     })
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestParam String email, @RequestParam String password) {
@@ -61,7 +62,7 @@ public class AuthController {
             return new ResponseEntity<>( "Token: " + jwt, HttpStatus.OK );
 
         }catch (Exception e){
-            return new ResponseEntity<>("Email or password invalid" , HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Email or password invalid" , HttpStatus.FORBIDDEN);
         }
     }
 }

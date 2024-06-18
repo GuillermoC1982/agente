@@ -1,8 +1,13 @@
 package com.mercadoLibre.endpointAgent.contollers;
+import com.mercadoLibre.endpointAgent.dtos.LogDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.services.ClientService;
 import com.mercadoLibre.endpointAgent.services.LogService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,9 +28,16 @@ public class LogController {
     private LogService logService;
 
 
-    @Operation(summary = "Endpoint para obtener todos los logs del sistema",
+    @Operation(summary = "Endpoint para obtener todos los logs del sistema con el usuario autenticado",
             description = "Retorna una lista con todos los logs registrados en el sistema generando un log con la peticion del usuario" )
     @SecurityRequirement(name = "bearer Authentication")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de logs obtenida exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = LogDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o no autorizado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
+    })
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllLogs(){
         try{
@@ -35,16 +47,10 @@ public class LogController {
             if (client == null) {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
-
             return ResponseEntity.ok(logService.getAllLogs(client));
         }
-
         catch (Exception e){
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-
-
-
     }
-
 }

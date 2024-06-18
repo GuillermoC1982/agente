@@ -9,9 +9,7 @@ public class LogDto {
     private String action;
     private String details;
     private LocalDateTime date;
-
     private FileDto file;
-
 
     public LogDto(Log log) {
         this.action = log.getAction();
@@ -35,5 +33,9 @@ public class LogDto {
 
     public LocalDateTime getDate() {
         return date;
+    }
+
+    public FileDto getFile() {
+        return file;
     }
 }

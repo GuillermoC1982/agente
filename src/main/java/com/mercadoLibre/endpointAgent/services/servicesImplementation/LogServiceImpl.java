@@ -39,7 +39,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public void createdClient(Client client) {
         Log log = new Log();
-        log.setAction("Created");
+        log.setAction("Client Created");
         log.setDetails("Client with email '" + client.getEmail() + "' was created successfully");
         log.setDate(LocalDateTime.now());
         logRepository.save(log);
@@ -53,8 +53,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public void loggedClient(Client client) {
         Log log = new Log();
-        log.setAction("Logged");
-        log.setDetails(client.getEmail() + " was logged successfully in the system right now");
+        log.setAction("Client Logged");
+        log.setDetails(client.getEmail() + " 'was logged successfully in the system right now'");
         log.setDate(LocalDateTime.now());
         logRepository.save(log);
 
@@ -66,8 +66,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public void deletedFile(File file, Client client) {
         Log log = new Log();
-        log.setAction("Deleted");
-        log.setDetails(file.getPath() + " was deleted successfully");
+        log.setAction("File Deleted");
+        log.setDetails(file.getPath() + " 'was deleted successfully'");
         log.setDate(LocalDateTime.now());
             logRepository.save(log);
             file.addLog(log);
@@ -80,7 +80,7 @@ public class LogServiceImpl implements LogService {
     public void getAllClients(Client client) {
         Log log = new Log();
         log.setAction("GetAllClients");
-        log.setDetails("GetAllClients was executed successfully all clients were retrieved");
+        log.setDetails("GetAllClients 'was executed successfully all clients were retrieved'");
         log.setDate(LocalDateTime.now());
             logRepository.save(log);
             client.addLog(log);
@@ -91,24 +91,27 @@ public class LogServiceImpl implements LogService {
     public Set<LogDto> getAllLogs(Client client) {
         Log log = new Log();
         log.setAction("GetAllLogs");
-        log.setDetails("GetAllLogs was executed successfully all logs were retrieved");
+        log.setDetails("GetAllLogs 'was executed successfully all logs were retrieved'");
         log.setDate(LocalDateTime.now());
         logRepository.save(log);
-
+        client.addLog(log);
+        clientService.saveClient(client);
         return logRepository.findAll().stream().map(LogDto::new).collect(Collectors.toSet());
     }
 
 
     @Override
-    public void scanFile(File file, Client client) {
+    public void scanFile(File file, Client client, ScanResult scanResult) {
 
         Log log = new Log();
-        log.setAction("Scan");
-        log.setDetails(file.getPath() + " was scanned successfully");
+        log.setAction("Scan File");
+        log.setDetails(file.getPath() + " 'was scanned successfully'");
         log.setDate(LocalDateTime.now());
             logRepository.save(log);
             file.addLog(log);
             fileService.saveFile(file);
+            file.addScanResult(scanResult);
+            scanResultService.saveScanResult(scanResult);
             client.addLog(log);
             clientService.saveClient(client);
 

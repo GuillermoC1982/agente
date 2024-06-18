@@ -9,7 +9,6 @@ public class ScanResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
     private String details;
     private LocalDateTime scanDate;
 
@@ -22,7 +21,6 @@ public class ScanResult {
     public ScanResult(String details,  LocalDateTime scanDate) {
         this.details = details;
         this.scanDate = scanDate;
-
     }
 
     public long getId() {

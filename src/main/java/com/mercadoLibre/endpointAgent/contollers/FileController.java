@@ -1,5 +1,6 @@
 package com.mercadoLibre.endpointAgent.contollers;
 
+import com.mercadoLibre.endpointAgent.dtos.FileDto;
 import com.mercadoLibre.endpointAgent.dtos.ReciveFileDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.File;
@@ -9,6 +10,8 @@ import com.mercadoLibre.endpointAgent.services.ClientService;
 import com.mercadoLibre.endpointAgent.services.LogService;
 import com.mercadoLibre.endpointAgent.services.ScanResultService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.mercadoLibre.endpointAgent.services.FileService;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -60,7 +62,6 @@ public class FileController {
             @ApiResponse(responseCode = "200", description = "File deleted successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden, User is not authenticated or does not have permission to delete the file"),
     })
-
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteFile(@RequestBody ReciveFileDto body) {
         System.out.println(body.path());
@@ -98,18 +99,18 @@ public class FileController {
             }
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return new ResponseEntity<>("The system cannot find the specified file: " + body.path() + " : " + e.getMessage(), HttpStatus.NOT_FOUND);
 
         } catch (AccessDeniedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return new ResponseEntity<>("User does not have permission to delete the file: " + body.path() + " : " + e.getMessage(), HttpStatus.FORBIDDEN);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return new ResponseEntity<>("Error during the deletion of the file: " + body.path() + ": " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("The file " + body.path() + " has been deleted successfully.\n" +
+        return new ResponseEntity<>("The file " + body.path() + " has been deleted successfully.\n\n" +
                 "Date creation: " + file.getCreationTime() + "\n" +
                 "Last modified: " + file.getLastModifiedTime() + "\n" +
                 "Last access: " + file.getLastAccessTime() + "\n" +
@@ -117,29 +118,49 @@ public class FileController {
                 "File type: " + file.getFileType() + "\n", HttpStatus.OK);
     }
 
-    @Operation(summary = "Endpoint para escanear un archivo en el sistema ",
+    @Operation(summary = "Endpoint para escanear un archivo en el sistema con usuario autenticado ",
             description = "Retorna la respuesta de VirusTotal la cual sera guardada como una propiedad del objeto File, <br><br> En este caso la ruta se manda normalmente sin notación de doble barra ya que se recibe como un requestParam. <br><br> " +
                     "Retorna los atributos del archivo escaneado o un mensaje de error si el archivo no existe en el sistema" )
     @SecurityRequirement(name = "bearer Authentication")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Archivo escaneado exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = FileDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Archivo no encontrado en el sistema", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado o usuario no autenticado", content = @Content)
+    })
     @GetMapping("/scan")
     public ResponseEntity<?> scanFile(@RequestParam String path) {
 
-        File file;
         try {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             Client client = clientService.findClientByEmail(email);
             Path pathFile = Paths.get(path);
+
+            if (client == null) {
+                return new ResponseEntity<>("User not authenticated", HttpStatus.FORBIDDEN);
+            }
 
             if (Files.exists(pathFile)) {
                 // Obtener los atributos del archivo
                 BasicFileAttributes attr = Files.readAttributes(pathFile, BasicFileAttributes.class);
 
                 //Obtengo los atributos del archivo y los guardo en el objeto File para retornarlos en la respuesta de la petición y para registrarlos en la base de datos sqLite y en el log de la app
-                file = fileService.generateFileByBasicFileAttributes(attr, pathFile);
-                logService.scanFile(file, client);
+                File file = fileService.generateFileByBasicFileAttributes(attr, pathFile);
+
                 System.out.println("Path: " + path);
 
+                String apiKey = "bfed34dc176355aa97d52ee5434bc93bf96d1985c5daa52afc47cf7a8c314ab7";
 
+                String hashSha256 = fileService.calculateSha256(path);
+                String result = fileService.sendHashToVirustotal(hashSha256, apiKey);
+                ScanResult scanResult = new ScanResult(result, LocalDateTime.now());
+               logService.scanFile(file, client, scanResult);
+
+                System.out.println("El hash SHA-256 del archivo es: " + hashSha256);
+                System.out.println("Respuesta de VirusTotal: " + result);
+
+                return new ResponseEntity<>(new FileDto(file), HttpStatus.OK);
             }else {
                 throw new FileNotFoundException();
             }
@@ -158,25 +179,5 @@ public class FileController {
             return new ResponseEntity<>("User is not authenticated", HttpStatus.FORBIDDEN);
         }
 
-            String apiKey = "bfed34dc176355aa97d52ee5434bc93bf96d1985c5daa52afc47cf7a8c314ab7";
-
-
-
-            String hashSha256 = fileService.calculateSha256(path);
-            String result = fileService.sendHashToVirustotal(hashSha256, apiKey);
-
-            ScanResult scanResult = new ScanResult(result, LocalDateTime.now());
-            file.addScanResult(scanResult);
-
-            fileService.saveFile(file);
-            scanResultService.saveScanResult(scanResult);
-
-
-            System.out.println("El hash SHA-256 del archivo es: " + hashSha256);
-            System.out.println("Respuesta de VirusTotal: " + result);
-
-            //return result;
-
-            return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

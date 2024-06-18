@@ -5,14 +5,15 @@ import com.mercadoLibre.endpointAgent.models.ScanResult;
 import java.time.LocalDateTime;
 
 public class ScanResultDto {
-
+    private LocalDateTime scanDate;
     private String details;
 
-    private LocalDateTime scanDate;
+
 
     public ScanResultDto(ScanResult scanResult) {
-        this.details = scanResult.getDetails();
         this.scanDate = scanResult.getScanDate();
+        this.details = scanResult.getDetails();
+
     }
 
     public String getDetails() {
