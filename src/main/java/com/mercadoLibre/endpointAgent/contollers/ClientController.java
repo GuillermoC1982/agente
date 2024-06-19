@@ -32,8 +32,9 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @Operation(summary = "Endpoint para obtener todos los usuarios",
-            description = "Retorna una lista con todos los usuarios registrados en el sistema generando un log con la peticion del usuario")
+    @Operation(summary = "Endpoint para obtener todos los usuarios con el usuario autenticado",
+            description = "Retorna una lista con todos los usuarios registrados en el sistema generando un log con la peticion del usuario" +
+                    " pero para hacerlo previamente debe recibir el token de autenticacion JWT")
     @SecurityRequirement(name = "bearer Authentication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida exitosamente", content = {
@@ -49,7 +50,7 @@ public class ClientController {
             Client client = clientService.findClientByEmail(email);
 
             if (client == null) {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("User not found or not authenticated", HttpStatus.NOT_FOUND);
             }
 
             logService.getAllClients(client);
@@ -62,9 +63,9 @@ public class ClientController {
 
     }
 
-    @Operation(summary = "Endpoint para registrar un nuevo usuario",
-            description = " Guarda un nuevo usuario en la base de datos sqLite. Retorna este nuevo usuario registrado en el sistema junto " +
-                    "con el http status de la operación correspondiente generando el primer log del usuario")
+    @Operation(summary = "Endpoint para registrar un nuevo usuario en el sistema",
+            description = " Guarda un nuevo usuario en la base de datos sqLite. Retorna un JSON con este nuevo usuario registrado en el sistema junto " +
+                    "con el http status de la operación correspondiente generando el primer log del usuario en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class))

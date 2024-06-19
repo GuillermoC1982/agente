@@ -34,10 +34,11 @@ public class WebConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/auth/login","/api/auth/register").permitAll()
+                                .requestMatchers("/api/auth/login","/api/clients/create").permitAll()
                                 .requestMatchers("/swagger-ui/index.html#/**").permitAll()
+
                                 .anyRequest().permitAll()
-                              //  .anyRequest().authenticated()
+
                 )
 
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
