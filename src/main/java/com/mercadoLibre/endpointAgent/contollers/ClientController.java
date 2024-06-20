@@ -70,8 +70,9 @@ public class ClientController {
             @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class))
             }),
-            @ApiResponse(responseCode = "400", description = "Solicitud inválida porque el email ya existe", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o no autorizado en el sistema", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida porque no envio un email o una contraseña", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o no autorizado en el sistema", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Este email ya existe en el sistema", content = @Content)
     })
     @PostMapping("/create")
     public ResponseEntity<?> createClient(@RequestParam String email, @RequestParam String password){

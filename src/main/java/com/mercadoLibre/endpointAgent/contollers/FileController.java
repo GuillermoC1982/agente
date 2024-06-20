@@ -119,7 +119,7 @@ public class FileController {
     }
 
     @Operation(summary = "Endpoint para escanear un archivo en el sistema con usuario autenticado ",
-            description = "Retorna la respuesta de VirusTotal la cual sera guardada como una propiedad del objeto File, <br><br> En este caso la ruta se manda normalmente sin notación de doble barra ya que se recibe como un requestParam. <br><br> " +
+            description = "Retorna un JSON con la respuesta de VirusTotal la cual sera guardada como una propiedad de tiop String llamada details del objeto scanResult que se genera en la base de datos asociado a un file con su respectivo log, <br><br> En este caso la ruta se manda normalmente sin notación de doble barra ya que se recibe como un requestParam. <br><br> " +
                     "Retorna los atributos del archivo escaneado o un mensaje de error si el archivo no existe en el sistema" )
     @SecurityRequirement(name = "bearer Authentication")
     @ApiResponses(value = {
@@ -160,7 +160,7 @@ public class FileController {
                 System.out.println("El hash SHA-256 del archivo es: " + hashSha256);
                 System.out.println("Respuesta de VirusTotal: " + result);
 
-                return new ResponseEntity<>(new FileDto(file), HttpStatus.OK);
+                return new ResponseEntity<>(scanResultService.createJsonByString(result), HttpStatus.OK);
             }else {
                 throw new FileNotFoundException();
             }
