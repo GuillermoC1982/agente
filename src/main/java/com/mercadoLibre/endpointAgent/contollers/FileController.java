@@ -59,8 +59,10 @@ public class FileController {
                     " o el usuario no esta autenticado devuelve un error 403 FORBIDDEN")
     @SecurityRequirement(name = "bearer Authentication")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "File deleted successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden, User is not authenticated or does not have permission to delete the file"),
+            @ApiResponse(responseCode = "200", description = "Archivo borrado exitosamente", content = @Content(schema = @Schema(implementation = FileDto.class))),
+            @ApiResponse(responseCode = "404", description = "El archivo no existe en el sistema" , content = @Content),
+            @ApiResponse(responseCode = "403", description = "El usuario no esta autenticado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor durante la operación de borrar el archivo", content = @Content)
     })
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteFile(@RequestBody ReciveFileDto body) {
@@ -127,7 +129,7 @@ public class FileController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = FileDto.class))
             }),
             @ApiResponse(responseCode = "404", description = "Archivo no encontrado en el sistema", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Acceso denegado o usuario no autenticado", content = @Content)
+            @ApiResponse(responseCode = "403", description = "Usuario no autenticado sin permisos para realizar esta operación", content = @Content)
     })
     @GetMapping("/scan")
     public ResponseEntity<?> scanFile(@RequestParam String path) {

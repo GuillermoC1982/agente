@@ -36,10 +36,7 @@ private PasswordEncoder passwordEncoder;
 //			Client user = new Client("user@meli.com", passwordEncoder.encode("123"));
 //
 //			clientRepository.save(user);
-			String jsonString = "{\"name\":\"John\", \"age\":30, \"city\":\"New York\"}";
 
-
-			System.out.println(scanResultService.createJsonByString(jsonString).toString());
 
 
 		};

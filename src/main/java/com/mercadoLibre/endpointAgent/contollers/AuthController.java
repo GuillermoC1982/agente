@@ -1,5 +1,6 @@
 package com.mercadoLibre.endpointAgent.contollers;
 
+import com.mercadoLibre.endpointAgent.dtos.TokenDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.models.JwtResponse;
 import com.mercadoLibre.endpointAgent.repositories.ClientRepository;
@@ -59,7 +60,7 @@ public class AuthController {
             logService.loggedClient(clientService.findClientByEmail(email));
 
 
-            return new ResponseEntity<>( "Token: " + jwt, HttpStatus.OK );
+            return new ResponseEntity<>( new TokenDto(jwt), HttpStatus.OK );
 
         }catch (Exception e){
             return new ResponseEntity<>("Email or password invalid" , HttpStatus.FORBIDDEN);

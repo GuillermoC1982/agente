@@ -1,4 +1,5 @@
 package com.mercadoLibre.endpointAgent.contollers;
+import com.mercadoLibre.endpointAgent.dtos.ClientDto;
 import com.mercadoLibre.endpointAgent.dtos.LogDto;
 import com.mercadoLibre.endpointAgent.models.Client;
 import com.mercadoLibre.endpointAgent.services.ClientService;
@@ -29,7 +30,7 @@ public class LogController {
 
 
     @Operation(summary = "Endpoint para obtener todos los logs del sistema con el usuario autenticado",
-            description = "Retorna una lista con todos los logs registrados en el sistema generando un log con la peticion del usuario" )
+            description = "Retorna una lista con todos los logs registrados en el sistema generando un log con la peticion del usuario")
     @SecurityRequirement(name = "bearer Authentication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de logs obtenida exitosamente", content = {
@@ -39,8 +40,8 @@ public class LogController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllLogs(){
-        try{
+    public ResponseEntity<?> getAllLogs() {
+        try {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             Client client = clientService.findClientByEmail(email);
 
@@ -48,9 +49,34 @@ public class LogController {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok(logService.getAllLogs(client));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @Operation(summary = "Endpoint para obtener todos los logs del usuario autenticado",
+            description = "Retorna un JSON con todos los logs registrados del usuario autenticado generando un log con la peticion del mismo en la base de datos")
+    @SecurityRequirement(name = "bearer Authentication")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de logs obtenida exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class))
+            }),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado o no autotenciado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor al obtener los logs", content = @Content)
+    })
+    @GetMapping("/currentClient")
+    public ResponseEntity<?> getCurrentClientLogs() {
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Client client = clientService.findClientByEmail(email);
+            if (client == null) {
+                return new ResponseEntity<>("User is not found or not authenticated", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(new ClientDto(client), HttpStatus.OK);
+        }
+
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }}
 }
