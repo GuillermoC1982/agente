@@ -111,8 +111,8 @@ public class LogServiceImpl implements LogService {
             file.addLog(log);
             fileService.saveFile(file);
             file.addScanResult(scanResult);
-            scanResultService.saveScanResult(scanResult);
             client.addLog(log);
+            scanResultService.saveScanResult(scanResult);
             clientService.saveClient(client);
 
 
