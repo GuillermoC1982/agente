@@ -56,7 +56,7 @@ Incluyo el diagrama de entidad de relación desarrollado para la aplicación, el
 ## Consideraciones adicionales
 
 - A fines prácticos, dejé codificada mi API key para que puedan realizar pruebas en VirusTotal. Entiendo que debería estar alojada como una variable de entorno por razones de seguridad, ya que es un dato sensible.
--  He dejado también un registro libre y abierto, ya que entiendo que a mi modo de ver es una aplicación de escritorio para que los usuarios de una pc en particular puedan registrar los movimientos al usarla, ver registros, escanear y borrar archivos, etc. Sin embargo, si la aplicación fuera a escala más grande, debería validar el registro de usuarios de manera más rigurosa, incluyendo reglas de verificación para correo electrónico usando expresiones regulares.
+- He dejado también un registro libre y abierto de usuarios, ya que entiendo que a mi modo de ver es una aplicación de escritorio para que los usuarios de una pc en particular puedan registrar los movimientos al usarla, ver registros, escanear y borrar archivos, etc. Sin embargo, si la aplicación fuera a escala más grande, debería validar el registro de usuarios de manera más rigurosa, incluyendo reglas de verificación para correo electrónico usando expresiones regulares.
 
 -  Además, podría considerarse que solo usuarios autenticados puedan habilitar nuevos registros de usuarios.
  Pero bueno, en este caso decidí dejarlo más simple para que sea más fácil probar su funcionalidad .
