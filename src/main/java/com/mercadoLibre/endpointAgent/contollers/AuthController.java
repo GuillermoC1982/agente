@@ -40,9 +40,10 @@ public class AuthController {
     @Autowired
     private JwtUtilService jwtUtilService;
 
-    @Operation(summary = "Endpoint para loguear al usuario", description = "Retorna un token jwt para el usuario que se loguea. " +
+@Operation(summary = "Endpoint para loguear al usuario", description = "Retorna un JSON con el token jwt para el usuario logueado. " +
             "Este token luego debe enviarse con cada peticion realizada en la app para que la peticion sea procesada. " +
-            "En caso de error retorna un mensaje de error con el error correspondiente en el body de la respuesta")
+            "En caso de error retorna un mensaje de error con el error correspondiente en el body de la respuesta" +
+      " => **Copiando el token y pegandolo arriba a la derecha donde dice Authorize (en swagger) se enviara este a todas las peticiones que lo requieran.**")
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación exitosa", content = {
